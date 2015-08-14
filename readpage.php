@@ -44,12 +44,17 @@ function DMStoDEC($dms) {
 } 
 
 // reading URL parameters
-$lang = $_GET["lang"];
+if (isset($_GET["lang"]) && preg_match("/^[a-z-]+$/", $_GET["lang"])) {
+  $lang = $_GET["lang"];
+}
+else {
+  $lang = "en";
+}
 $file = str_replace("\'","'",$_GET["name"]);
 $file = str_replace(" ", "_", $file);
 
 // reading article data
-$content = file_get_contents("https://" . $lang . ".wikivoyage.org/w/index.php?title=" . $file . "&action=raw");
+$content = file_get_contents("https://" . $lang . ".wikivoyage.org/w/index.php?title=" . urlencode($file) . "&action=raw");
 
 // strip comments and nowiki
 $content = preg_replace('/<!--(.|\s)*?-->/', '', $content);
