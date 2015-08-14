@@ -399,6 +399,16 @@ function escape( $string ) {
   map.addControl(new L.Control.Scale());
   map.addControl(new L.Control.Buttons());
   map.addControl(new L.Control.Locate());
+
+  // Add privacy warning
+  var container = document.getElementsByClassName('leaflet-control-layers')[0]
+    .getElementsByClassName('leaflet-control-layers-overlays')[0];
+  // Set default if not localised
+  if (!privacyWarning) {
+    privacyWarning = 'Content with <img src="./lib/images/external.png" /> is hosted externally, so enabling it shares your data with other sites.';
+  }
+  container.innerHTML = container.innerHTML + '<div class="leaflet-control-layers-separator"></div>'
+    + '<div style="width: 200px; overflow: auto;">' + privacyWarning + '</div>';
   
 </script>
 
