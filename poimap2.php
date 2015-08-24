@@ -32,13 +32,34 @@ ToDo:
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title> <?php echo htmlspecialchars($_GET["name"]) ?> — Wikivoyage Map</title>
+    <title> <?php echo $_GET["name"]," — Wikivoyage Map" ?></title>
     <link rel="icon" href="./lib/images/favicon.png" type= "image/png" />
     <link rel="stylesheet" href="./lib/leaflet.css" />
     <link rel="stylesheet" href="./lib/poimap.css" />
     <link rel="stylesheet" href="./lib/PruneCluster.css" />
     <link rel="stylesheet" href="./lib/locate.css" />
     <link rel="stylesheet" href="./lib/Control.OSMGeocoder.css" />
+  </head>
+<body>
+<div id="map">
+  <div id="logo">
+    <img src="./lib/images/logo.png" alt= "Logo" title= "Version 2015-07-15" width="64" height="64">
+  </div>
+  <script type="text/javascript" src="./lib/leaflet.js"></script>
+  <script type="text/javascript" src="./lib/Leaflet.EdgeMarker.js"></script>
+  <script type="text/javascript" src="./lib/leaflet.markercluster.js"></script>
+  <script type="text/javascript" src="./lib/PruneCluster.js"></script>
+  <script type="text/javascript" src="./lib/buttons-new.js"></script>
+  <script type="text/javascript" src="./lib/zoomdisplay.js"></script>
+  <script type="text/javascript" src="./lib/markers.js"></script>
+  <script type="text/javascript" src="./lib/gpx.js"></script>
+  <script type="text/javascript" src="./lib/locate.js"></script>
+  <script type="text/javascript" src="./lib/Control.OSMGeocoder.js"></script>
+  <script type="text/javascript" src="./lib/i18n.js"></script>
+  <script type="text/javascript" src="./data/<?php echo $_GET["lang"] ?: "en"; ?>-articles.js"></script>
+  <script type="text/javascript" src="./locale/<?php echo $_GET["lang"] ?: "en"; ?>.js"></script>
+  <script type="text/javascript" src="./lib/maptiles.js"></script>
+  
 <?php
 
 /* //PHP error reporting  *** TEST ***
@@ -68,53 +89,9 @@ fclose($fp);
 // search for fixed color
 $fixedcolor = strpos($gpxcontent, 'fixedcolor="yes"');
 
-// Borrowed from MediaWiki
-function escape( $string ) {
-  // See ECMA 262 section 7.8.4 for string literal format
-  $pairs = array(
-    "\\" => "\\\\",
-    "\"" => "\\\"",
-    '\'' => '\\\'',
-    "\n" => "\\n",
-    "\r" => "\\r",
-    # To avoid closing the element or CDATA section
-    "<" => "\\x3c",
-    ">" => "\\x3e",
-    # To avoid any complaints about bad entity refs
-    "&" => "\\x26",
-    # Work around https://bugzilla.mozilla.org/show_bug.cgi?id=274152
-    # Encode certain Unicode formatting chars so affected
-    # versions of Gecko don't misinterpret our strings;
-    # this is a common problem with Farsi text.
-    "\xe2\x80\x8c" => "\\u200c", // ZERO WIDTH NON-JOINER
-    "\xe2\x80\x8d" => "\\u200d", // ZERO WIDTH JOINER
-  );
-  return strtr( $string, $pairs );
-}
-
 // echo '<pre>'; print_r($GLOBALS); echo '</pre>'; // *** TEST ***
 
 ?>
-</head>
-<body>
-<div id="map">
-  <div id="logo">
-    <img src="./lib/images/logo.png" alt= "Logo" title= "Version 2015-07-15" width="64" height="64">
-  </div>
-  <script type="text/javascript" src="./lib/leaflet.js"></script>
-  <script type="text/javascript" src="./lib/Leaflet.EdgeMarker.js"></script>
-  <script type="text/javascript" src="./lib/leaflet.markercluster.js"></script>
-  <script type="text/javascript" src="./lib/PruneCluster.js"></script>
-  <script type="text/javascript" src="./lib/buttons-new.js"></script>
-  <script type="text/javascript" src="./lib/zoomdisplay.js"></script>
-  <script type="text/javascript" src="./lib/markers.js"></script>
-  <script type="text/javascript" src="./lib/gpx.js"></script>
-  <script type="text/javascript" src="./lib/locate.js"></script>
-  <script type="text/javascript" src="./lib/Control.OSMGeocoder.js"></script>
-  <script type="text/javascript" src="./lib/i18n.js"></script>
-  <script type="text/javascript" src="./data/<?php echo $lang ?>-articles.js"></script>
-  <script type="text/javascript" src="./locale/<?php echo $lang ?>.js"></script>
-  <script type="text/javascript" src="./lib/maptiles.js"></script>
 
 <noscript> 
  <h2><a href="http://activatejavascript.org/en/">This application needs JavaScript. - See instructions:</a></h2>
@@ -125,7 +102,7 @@ function escape( $string ) {
 // stop for testing // *** TEST ***
 // alert("stop for testing"); // *** TEST ***
 
-  var lang = "<?php echo $lang ?>";
+  var lang = "<?php echo $_GET["lang"] ?: en; ?>";
   L.registerLocale(lang, mylocale);
   L.setLocale(lang);
   
@@ -184,20 +161,20 @@ function escape( $string ) {
   }
 
   // All arrays to js
-  var jslat   =  '<?php echo escape($_GET["lat"] ?: "0") ?>';
+  var jslat   =  '<?php echo $_GET["lat"] ?: "0";?>';
   if (isNaN(jslat)) { jslat= "0"; alert("ERROR: Lat must be numeric!");}
   jslat =parseFloat(jslat);
-  var jslon   =  '<?php echo escape($_GET["lon"] ?: "0") ?>';
+  var jslon   =  '<?php echo $_GET["lon"] ?: "0"; ?>';
   if (isNaN(jslon)) { jslon= "0";alert("ERROR: Lon must be numeric!");}
   jslon =parseFloat(jslon);
-  var jszoom  =  '<?php echo escape($_GET["zoom"] ?: "14") ?>';
+  var jszoom  =  '<?php echo $_GET["zoom"] ?: "14"; ?>';
   var autozoom = "no";
   if (jszoom == "auto") {autozoom = "yes";}
 	if (parseInt(jszoom) < 0 | parseInt(jszoom) > 18 | isNaN(jszoom) | jslat == 0 | jslon == 0) {jszoom = 10;}
-  var jslayer = '<?php echo escape($_GET["layer"] ?: "M") ?>'.toUpperCase();
+  var jslayer = '<?php echo $_GET["layer"] ?: "M"; ?>'.toUpperCase();
   if (jslayer == "UNDEFINED") {jslayer = "M";}
   if (jslayer == "E") {jslayer = "ODE-P";}
-  var jslang  = '<?php echo $lang ?>'.toLowerCase();
+  var jslang  = '<?php echo $_GET["lang"]; ?>'.toLowerCase();
 
   var jsmax = <?php echo $max; ?>;
   var jsp =   <?php echo json_encode($p); ?>;
@@ -296,7 +273,7 @@ function escape( $string ) {
     }
   });
   var mi = 1;
-  var artname = "<?php echo escape($_GET["name"]) ?>";
+  var artname = "<?php echo $_GET["name"]?>";
   var tooltip = "no";
   var poilink = "no";
   while(mi <= jsmax){
