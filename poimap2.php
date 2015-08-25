@@ -381,7 +381,7 @@ $fixedcolor = strpos($gpxcontent, 'fixedcolor="yes"');
   var container = document.getElementsByClassName('leaflet-control-layers')[0]
     .getElementsByClassName('leaflet-control-layers-overlays')[0];
   // Set default if not localised
-  if (!privacyWarning) {
+  if (window.privacyWarning === undefined) {
     privacyWarning = 'Content with <img src="./lib/images/external.png" /> is hosted externally, so enabling it shares your data with other sites.';
   }
   container.innerHTML = container.innerHTML + '<div class="leaflet-control-layers-separator"></div>'
